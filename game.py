@@ -21,7 +21,7 @@ moving = False
 class Tank:
     def __init__(self,startposition,gamertag, startdir):
         self.pos = startposition
-        self.speed = 3
+        self.speed = 0
         self.tag = gamertag
         self.movdir = startdir
         self.aimdir = startdir
@@ -54,24 +54,29 @@ bullets = []
 
 tank = Tank([48,48],"YOU", -90)
 while True:
-    moving = False
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
-        if event.type == KEYDOWN:
-            keys = pygame.key.get_pressed()
-            if keys[K_d]:
-                tank.movdir-=5
-            if keys[K_a]:
-                tank.movdir+=5
-            if keys[K_w]:
-                moving = True
+        keys = pygame.key.get_pressed()
+        if keys[K_d]:
+            tank.movdir-=5
+        if keys[K_a]:
+            tank.movdir+=5
+        if keys[K_w]:
+            tank.speed = 3
+        if keys[K_s]:
+            tank.speed = -3
+        if keys[K_s] == False and keys[K_w] == False:
+            tank.speed = 0
         if event.type == MOUSEBUTTONDOWN:
             bullet = Bullet([tank.pos[0],tank.pos[1]],tank.aimdir + 180, random.randint(-5,5))
             bullets.append(bullet)
     if moving == True:
+        moving = False
         tank.move()
+    else:
+        moving = True
     tank.updateGunAngle()
 
     for bullet in bullets:
