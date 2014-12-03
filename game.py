@@ -42,7 +42,7 @@ class Bullet:
         self.pos[1] = int(self.pos[1] + self.speed*sin((-self.movdir+90)*pi/180))
         if self.pos[0] > width or self.pos[0] < 0:
             bullets.remove(self)
-        if self.pos[1] > height or self.pos[1] < 0:
+        elif self.pos[1] > height or self.pos[1] < 0:
             bullets.remove(self)
         
         
@@ -52,15 +52,19 @@ screen = pygame.display.set_mode(size)
 
 bullets = []
 
-tank = Tank([48,48],"YOU", 0)
+tank = Tank([48,48],"YOU", -90)
 while True:
     moving = False
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == KEYDOWN:
+            keys = pygame.key.get_pressed()
             if keys[K_d]:
                 tank.movdir-=5
+            if keys[K_a]:
+                tank.movdir+=5
             if keys[K_w]:
                 moving = True
         if event.type == MOUSEBUTTONDOWN:
