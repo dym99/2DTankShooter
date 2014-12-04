@@ -13,6 +13,7 @@ pygame.key.set_repeat(20)
 
 tank_base_img = pygame.image.load("images/tank_base.png")
 tank_gun_img = pygame.image.load("images/tank_gun.png")
+tank_rubble_img = pygame.image.load("images/tank_rubble.png")
 crosshair = pygame.image.load("images/crosshair.png")
 explosion = []
 epl0 = pygame.image.load("images/expl_00.png")
@@ -176,6 +177,9 @@ while True:
         transimg = pygame.transform.rotate(tank.baseimg,tank.movdir)
         screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
         transimg = pygame.transform.rotate(tank_gun_img,tank.aimdir)
+        screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
+    else:
+        transimg = pygame.transform.rotate(tank_rubble_img,tank.movdir)
         screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
     mpos = x,y = pygame.mouse.get_pos()
     for explode in explosions:
