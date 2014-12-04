@@ -37,8 +37,13 @@ explosion.append(epl4)
 explosions = []
 
 pygame.mouse.set_visible(False)
+health = 100
+font = pygame.font.SysFont("Arial",20)
 black = [0,0,0,255]
 white = [255,255,255,255]
+red = [255,0,0,255]
+blue = [0,255,0,255]
+green = [0,0,255,255]
 moving = False
 class Tank:
     def __init__(self,startposition,gamertag, startdir):
@@ -106,7 +111,9 @@ c = False
 cc = False
 b = False
 f = False
-size = width, height = (1280,920)
+size = width, height = (1366,768)
+#My dimensions 1366 and 768
+#1200, and 900
 screen = pygame.display.set_mode(size,FULLSCREEN)
 
 bullets = []
@@ -125,6 +132,11 @@ while True:
         if event.type == MOUSEBUTTONDOWN:
             bullet = Bullet([tank.pos[0],tank.pos[1]],tank.aimdir + 180, random.randint(-5,5))
             bullets.append(bullet)
+        if keys[K_p] == False:
+            health -= 5
+        if health < 1:
+            pygame.quit()
+            sys.exit()
     if moving == True:
         moving = False
         movspeed = 0
@@ -162,5 +174,12 @@ while True:
     for explode in explosions:
         screen.blit(explode.getImage(), pygame.Rect(explode.pos[0]-16,explode.pos[1]-16,32,32))
     screen.blit(crosshair, pygame.Rect(x-16,y-16,32,32))
+    ##### text code goes here
+    ### this is suitable for my computer
+    renderedText = font.render("Health: "+str(health),1,red)
+    screen.blit(renderedText, (width - 100,10))
+
+    #########
+
     pygame.display.flip()
     pygame.time.wait(10)
