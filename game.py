@@ -102,9 +102,12 @@ class Bullet:
         bullets.remove(self)
         
         
-
-size = width, height = (640,480)
-screen = pygame.display.set_mode(size)
+c = False
+cc = False
+b = False
+f = False
+size = width, height = (1280,920)
+screen = pygame.display.set_mode(size,FULLSCREEN)
 
 bullets = []
 
@@ -115,22 +118,26 @@ while True:
             pygame.quit()
             sys.exit()
         keys = pygame.key.get_pressed()
-        if keys[K_d]:
-            tank.movdir-=5
-        if keys[K_a]:
-            tank.movdir+=5
-        if keys[K_w]:
-            tank.speed = -3
-        if keys[K_s]:
-            tank.speed = 3
-        if keys[K_s] == False and keys[K_w] == False:
-            tank.speed = 0
+        c = keys[K_d]
+        cc = keys[K_a]
+        f = keys[K_w]
+        b = keys[K_s]
         if event.type == MOUSEBUTTONDOWN:
             bullet = Bullet([tank.pos[0],tank.pos[1]],tank.aimdir + 180, random.randint(-5,5))
             bullets.append(bullet)
     if moving == True:
         moving = False
+        movspeed = 0
+        if f:
+            movspeed -= 3
+        if b:
+            movspeed += 3
+        tank.speed = movspeed
         tank.move()
+        if cc:
+            tank.movdir+=5
+        if c:
+            tank.movdir-=5
         if tank.speed > 0:
             tank.anim()
     else:
