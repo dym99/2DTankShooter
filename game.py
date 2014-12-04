@@ -39,10 +39,11 @@ explosions = []
 pygame.mouse.set_visible(False)
 font = pygame.font.SysFont("Arial",20)
 black = [0,0,0,255]
+grey = [127,127,127,255]
 white = [255,255,255,255]
 red = [255,0,0,255]
-blue = [0,255,0,255]
-green = [0,0,255,255]
+green = [0,255,0,255]
+blue = [0,0,255,255]
 moving = False
 class Tank:
     def __init__(self,startposition,gamertag, startdir):
@@ -55,8 +56,9 @@ class Tank:
         self.movdir = startdir
         self.aimdir = startdir
     def move(self):
-        self.pos[0] = int(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180)) % width
-        self.pos[1] = int(self.pos[1] + self.speed*sin((-self.movdir+90)*pi/180)) % height
+        if self.alive:
+            self.pos[0] = int(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180)) % width
+            self.pos[1] = int(self.pos[1] + self.speed*sin((-self.movdir+90)*pi/180)) % height
     def updateGunAngle(self):
         mpos = pygame.mouse.get_pos()
         self.aimdir = ((180-atan2(mpos[1]-self.pos[1],mpos[0]-self.pos[0])*180/pi))+90
@@ -123,7 +125,7 @@ screen = pygame.display.set_mode(size,FULLSCREEN)
 
 bullets = []
 
-tank = Tank([48,48],"YOU", -90)
+tank = Tank([64,64],"YOU", -90)
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -141,6 +143,11 @@ while True:
             if event.type == MOUSEBUTTONDOWN:
                 bullet = Bullet([tank.pos[0],tank.pos[1]],tank.aimdir + 180, random.randint(-5,5))
                 bullets.append(bullet)
+        else:
+            c = False
+            cc = False
+            f = False
+            b = False
         if keys[K_p]:
             tank.health -= 1
         if tank.health < 1:
@@ -185,10 +192,10 @@ while True:
     for explode in explosions:
         screen.blit(explode.getImage(), pygame.Rect(explode.pos[0]-16,explode.pos[1]-16,32,32))
     screen.blit(crosshair, pygame.Rect(x-16,y-16,32,32))
-    ##### text code goes here
-    ### this is suitable for my computer
-    renderedText = font.render("Health: "+str(tank.health),1,red)
-    screen.blit(renderedText, (width - 100,10))
+    ##### HUD code goes here #####
+    
+    pygame.draw.rect(screen, red, pygame.Rect(width-210,10,tank.health*2,20))
+    pygame.draw.rect(screen, grey, pygame.Rect(width-210,10,200,20),3)
 
     #########
 
