@@ -12,7 +12,6 @@ pygame.init()
 pygame.key.set_repeat(20)
 
 tank_base_img = pygame.image.load("images/tank_base.png")
-tank_base_img2 = pygame.image.load("images/tank_base_2.png")
 tank_gun_img = pygame.image.load("images/tank_gun.png")
 crosshair = pygame.image.load("images/crosshair.png")
 explosion = []
@@ -37,7 +36,6 @@ explosion.append(epl4)
 explosions = []
 
 pygame.mouse.set_visible(False)
-health = 100
 font = pygame.font.SysFont("Arial",20)
 black = [0,0,0,255]
 white = [255,255,255,255]
@@ -49,6 +47,8 @@ class Tank:
     def __init__(self,startposition,gamertag, startdir):
         self.pos = startposition
         self.speed = 0
+        self.alive = True
+        self.health = 100
         self.baseimg = tank_base_img
         self.tag = gamertag
         self.movdir = startdir
@@ -59,11 +59,15 @@ class Tank:
     def updateGunAngle(self):
         mpos = pygame.mouse.get_pos()
         self.aimdir = ((180-atan2(mpos[1]-self.pos[1],mpos[0]-self.pos[0])*180/pi))+90
-    def anim(self):
-        if self.baseimg == tank_base_img:
-            self.baseimg = tank_base_img2
-        else:
-            self.baseimg = tank_base_img
+    def die(self):
+        if self.alive:
+            self.alive = False
+            explosions.append(Explosion(self.pos))
+            explosions.append(Explosion([self.pos[0]-16,self.pos[1]-16]))
+            explosions.append(Explosion([self.pos[0]-16,self.pos[1]+16]))
+            explosions.append(Explosion([self.pos[0]+16,self.pos[1]-16]))
+            explosions.append(Explosion([self.pos[0]+16,self.pos[1]+16]))
+            
 
 class Explosion:
     def __init__(self,pos):
@@ -125,18 +129,22 @@ while True:
             pygame.quit()
             sys.exit()
         keys = pygame.key.get_pressed()
-        c = keys[K_d]
-        cc = keys[K_a]
-        f = keys[K_w]
-        b = keys[K_s]
-        if event.type == MOUSEBUTTONDOWN:
-            bullet = Bullet([tank.pos[0],tank.pos[1]],tank.aimdir + 180, random.randint(-5,5))
-            bullets.append(bullet)
-        if keys[K_p] == False:
-            health -= 5
-        if health < 1:
+        if keys[K_ESCAPE]:
             pygame.quit()
             sys.exit()
+        if tank.alive:
+            c = keys[K_d]
+            cc = keys[K_a]
+            f = keys[K_w]
+            b = keys[K_s]
+            if event.type == MOUSEBUTTONDOWN:
+                bullet = Bullet([tank.pos[0],tank.pos[1]],tank.aimdir + 180, random.randint(-5,5))
+                bullets.append(bullet)
+        if keys[K_p]:
+            tank.health -= 1
+        if tank.health < 1:
+            tank.health = 0
+            tank.die()
     if moving == True:
         moving = False
         movspeed = 0
@@ -150,8 +158,6 @@ while True:
             tank.movdir+=5
         if c:
             tank.movdir-=5
-        if tank.speed > 0:
-            tank.anim()
     else:
         moving = True
     tank.updateGunAngle()
@@ -166,17 +172,18 @@ while True:
     screen.fill(black)
     for bullet in bullets:
         pygame.draw.circle(screen, white, (bullet.pos[0],bullet.pos[1]), 3)
-    transimg = pygame.transform.rotate(tank.baseimg,tank.movdir)
-    screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
-    transimg = pygame.transform.rotate(tank_gun_img,tank.aimdir)
-    screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
+    if tank.alive:
+        transimg = pygame.transform.rotate(tank.baseimg,tank.movdir)
+        screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
+        transimg = pygame.transform.rotate(tank_gun_img,tank.aimdir)
+        screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
     mpos = x,y = pygame.mouse.get_pos()
     for explode in explosions:
         screen.blit(explode.getImage(), pygame.Rect(explode.pos[0]-16,explode.pos[1]-16,32,32))
     screen.blit(crosshair, pygame.Rect(x-16,y-16,32,32))
     ##### text code goes here
     ### this is suitable for my computer
-    renderedText = font.render("Health: "+str(health),1,red)
+    renderedText = font.render("Health: "+str(tank.health),1,red)
     screen.blit(renderedText, (width - 100,10))
 
     #########
