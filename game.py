@@ -161,7 +161,7 @@ CurrentMap = loadMap("plains")
 
 size = width, height = (1280,960)
 #My dimensions 1366 and 768 ---> Griffin try 1280 and 960 too if those work then perfect.
-#1200, and 900
+#1280,960
 screen = pygame.display.set_mode(size,FULLSCREEN)
 
 bullets = []

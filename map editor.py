@@ -4,7 +4,8 @@ from pygame import *
 
 pygame.init()
 NAME = input("Enter Map Name > ")
-backtile = pygame.image.load("images/tiles/"+input("Background Tile > ")+".png")
+BACK = input("Background Tile > ")
+backtile = pygame.image.load("images/tiles/"+BACK+".png")
 sandstone = pygame.image.load("images/tiles/sandstone.png")
 grasscliff = pygame.image.load("images/tiles/grasscliff.png")
 sand = pygame.image.load("images/tiles/sand.png")
@@ -14,9 +15,10 @@ black = [0,0,0,255]
 green = [0,255,0,255]
 
 class Tile:
-    def __init__(self,pos,img,solid):
+    def __init__(self,pos,img,imgstr,solid):
         self.pos = pos
         self.img = img
+        self.imgstr = imgstr
         self.solid = solid
     def getHitbox(self):
         rect = pygame.Rect(self.pos[0],self.pos[1],32,32)
@@ -38,8 +40,8 @@ pygame.display.set_caption("Tank Shooter Map Editor")
 NewMap = Map(NAME,[],backtile,(1280,960),[])
 
 buttons = []
-buttons.append(Tile([41*32,32],sandstone,0))
-buttons.append(Tile([41*32,32*3],grasscliff,0))
+buttons.append(Tile([41*32,32],sandstone,"sandstone",0))
+buttons.append(Tile([41*32,32*3],grasscliff,"grasscliff",0))
 
 currentTile = sandstone
 while True:
@@ -53,22 +55,12 @@ while True:
                 file = open("maps/"+NAME+".tsmap",'w')
                 file.write("# options \n")
                 file.write("map_name "+NAME+"\n")
-                backtxt = "sand"
-                if NewMap.backtile == sand:
-                    backtxt = "sand"
-                elif NewMap.backtile == grass:
-                    backtxt = "grass"
-                file.write("back_tile "+backtxt+"\n")
+                file.write("back_tile "+BACK+"\n")
                 file.write("map_size 1280 960 \n")
                 file.write("# end options \n")
                 
                 for t in NewMap.tiles:
-                    imgtxt = "sandstone"
-                    if t.img == sandstone:
-                        imgtxt = "sandstone"
-                    elif t.img == grasscliff:
-                        imgtxt == "grasscliff"
-                    file.write("tile "+str(int(t.pos[0]/32))+" "+str(int(t.pos[1]/32))+" "+imgtxt + " 1 \n")
+                    file.write("tile "+str(int(t.pos[0]/32))+" "+str(int(t.pos[1]/32))+" "+t.imgstr + " 1 \n")
                 file.close()
         if event.type == MOUSEBUTTONDOWN:
             mpos = x,y = pygame.mouse.get_pos()
@@ -77,7 +69,11 @@ while True:
                     currentTile = b.img
             if mpos[0] < 1280:
                 if event.button == 1:
-                    t = Tile([x-x%32,y-y%32],currentTile,1)
+                    if currentTile == sandstone:
+                        t = Tile([x-x%32,y-y%32],currentTile,"sandstone",1)
+                    elif currentTile == grasscliff:
+                        t = Tile([x-x%32,y-y%32],currentTile,"grasscliff",1)
+
                     NewMap.tiles.append(t)
                 else:
                     for t in NewMap.tiles:
