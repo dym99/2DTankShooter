@@ -55,6 +55,8 @@ class Tank:
         self.tag = gamertag
         self.movdir = startdir
         self.aimdir = startdir
+    def getHitbox(self):
+        return pygame.Rect(pos[0]-18,pos[1]-18,36,36)
     def move(self):
         if self.alive:
             self.pos[0] = int(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180)) % width
@@ -84,14 +86,49 @@ class Explosion:
         return explosion[int(self.frame)]
 
 class Tile:
-    def __init__(self,pos,img):
+    def __init__(self,pos,img,solid):
         self.pos = pos
         self.img = img
+        self.solid = solid
+
+class Map:
+    def __init__(self,name,tiles,backtile,size,spawns):
+        self.tiles = tiles
+        self.backtile = backtile
+        self.size = size
+        self.spawns = spawns
+
+def loadMap(mapfile):
+    file = open("maps/" + mapfile + ".tsmap")
+    map_name = mapfile
+    back_tile = None
+    map_size = (1280,960)
+    tiles = []
+    spawns = []
+    for l in file:
+        w = l.split()
+        if len(w)>0:
+            if w[0] == "#":
+                pass
+            elif w[0] == "map_name":
+                map_name = w[1]
+            elif w[0] == "back_tile":
+                back_tile = pygame.image.load("images/tiles/" + w[1] + ".png")
+            elif w[0] == "map_size":
+                map_size = (int(w[1])*32,int(w[2])*32)
+            elif w[0] == "tile":
+                tile = Tile([int(w[1])*32,int(w[2])*32],pygame.image.load("images/tiles/"+w[3]+".png"),int(w[4]))
+                tiles.append(tile)
+            elif w[0] == "tank":
+                spawns.append([int(w[1])*32, int(w[2])*32])
+    file.close()
+    newmap = Map(map_name,tiles,back_tile,map_size,spawns)
+    return newmap
 
 class Bullet:
     def __init__(self, pos, movdir, accuracy):
         self.pos = pos
-        self.speed = 10
+        self.speed = 16
         self.movdir = movdir + accuracy
     def move(self):
         self.pos[0] = int(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180))
@@ -118,14 +155,22 @@ c = False
 cc = False
 b = False
 f = False
-size = width, height = (1366,768)
-#My dimensions 1366 and 768
+
+
+CurrentMap = loadMap("plains")
+
+size = width, height = (1280,960)
+#My dimensions 1366 and 768 ---> Griffin try 1280 and 960 too if those work then perfect.
 #1200, and 900
 screen = pygame.display.set_mode(size,FULLSCREEN)
 
 bullets = []
 
-tank = Tank([64,64],"YOU", -90)
+if len(CurrentMap.spawns)>0:
+    tank = Tank(CurrentMap.spawns[0],"YOU", -90)
+else:
+    tank = Tank([64,64],"YOU", -90)
+
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -140,7 +185,7 @@ while True:
             cc = keys[K_a]
             f = keys[K_w]
             b = keys[K_s]
-            if event.type == MOUSEBUTTONDOWN:
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
                 bullet = Bullet([tank.pos[0],tank.pos[1]],tank.aimdir + 180, random.randint(-5,5))
                 bullets.append(bullet)
         else:
@@ -153,19 +198,17 @@ while True:
         if tank.health < 1:
             tank.health = 0
             tank.die()
-    if moving == True:
-        moving = False
-        movspeed = 0
-        if f:
-            movspeed -= 3
-        if b:
-            movspeed += 3
-        tank.speed = movspeed
-        tank.move()
-        if cc:
-            tank.movdir+=5
-        if c:
-            tank.movdir-=5
+    movspeed = 0
+    if f:
+        movspeed -= 3
+    if b:
+        movspeed += 3
+    tank.speed = movspeed
+    tank.move()
+    if cc:
+        tank.movdir+=5
+    if c:
+        tank.movdir-=5
     else:
         moving = True
     tank.updateGunAngle()
@@ -175,11 +218,18 @@ while True:
 
     for explode in explosions:
         explode.anim()
-    ###########
     
     screen.fill(black)
+
+    ###############################
+    
+    for y in range(30):
+        for x in range(40):
+            screen.blit(CurrentMap.backtile,(x*32,y*32))
     for bullet in bullets:
         pygame.draw.circle(screen, white, (bullet.pos[0],bullet.pos[1]), 3)
+    for t in CurrentMap.tiles:
+        screen.blit(t.img,pygame.Rect((t.pos[0],t.pos[1],32,32)))
     if tank.alive:
         transimg = pygame.transform.rotate(tank.baseimg,tank.movdir)
         screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
@@ -188,16 +238,17 @@ while True:
     else:
         transimg = pygame.transform.rotate(tank_rubble_img,tank.movdir)
         screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
-    mpos = x,y = pygame.mouse.get_pos()
     for explode in explosions:
         screen.blit(explode.getImage(), pygame.Rect(explode.pos[0]-16,explode.pos[1]-16,32,32))
+    mpos = x,y = pygame.mouse.get_pos()
     screen.blit(crosshair, pygame.Rect(x-16,y-16,32,32))
     ##### HUD code goes here #####
     
+    pygame.draw.rect(screen, black, pygame.Rect(width-210,10,200,20))
     pygame.draw.rect(screen, red, pygame.Rect(width-210,10,tank.health*2,20))
     pygame.draw.rect(screen, grey, pygame.Rect(width-210,10,200,20),3)
 
     #########
 
     pygame.display.flip()
-    pygame.time.wait(10)
+    pygame.time.wait(5)
