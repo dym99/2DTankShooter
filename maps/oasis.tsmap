@@ -1,0 +1,13 @@
+# options 
+map_name oasis
+back_tile sand
+map_size 1280 960 
+# end options 
+water 35 3
+water 36 3
+water 36 2
+water 35 2
+tile 34 1 sandstone 1 
+tile 37 1 sandstone 1 
+tile 37 4 sandstone 1 
+tile 34 4 sandstone 1 

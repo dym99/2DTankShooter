@@ -36,6 +36,11 @@ explosion.append(epl4)
 explosion.append(epl4)
 explosions = []
 
+edges = ["ctl","ctc","ctr","ccl","","ccr","cbl","cbc","cbr"]
+
+water_0 = pygame.image.load("images/tiles/water_00.png")
+water_1 = pygame.image.load("images/tiles/water_01.png")
+
 pygame.mouse.set_visible(False)
 font = pygame.font.SysFont("Arial",20)
 black = [0,0,0,255]
@@ -91,6 +96,25 @@ class Tile:
         self.img = img
         self.solid = solid
         self.hitbox = pygame.Rect(self.pos[0],self.pos[1],32,32)
+        
+class Water(Tile):
+    def __init__(self,pos,solid):
+        self.pos = pos
+        self.img = water_0
+        self.imgs = [water_0,water_1]
+        self.frame = 0
+        self.ticks = 0
+        self.solid = solid
+        self.hitbox = pygame.Rect(self.pos[0],self.pos[1],32,32)
+    def anim(self):
+        self.ticks += 1
+        if self.ticks > 5:
+            self.ticks = 0
+            self.frame+=1
+            if self.frame > len(self.imgs)-1:
+                self.frame = 0
+            self.img = self.imgs[self.frame]
+        
 
 class Map:
     def __init__(self,name,tiles,backtile,size,spawns):
@@ -119,6 +143,9 @@ def loadMap(mapfile):
                 map_size = (int(w[1])*32,int(w[2])*32)
             elif w[0] == "tile":
                 tile = Tile([int(w[1])*32,int(w[2])*32],pygame.image.load("images/tiles/"+w[3]+".png"),int(w[4]))
+                tiles.append(tile)
+            elif w[0] == "water":
+                tile = Water([int(w[1])*32,int(w[2])*32],0)
                 tiles.append(tile)
             elif w[0] == "tank":
                 spawns.append([int(w[1])*32, int(w[2])*32])
@@ -158,8 +185,7 @@ b = False
 f = False
 
 
-CurrentMap = loadMap("plains")
-
+CurrentMap = loadMap("greenhill")
 size = width, height = (1280,960)
 #My dimensions 1366 and 768 ---> Griffin try 1280 and 960 too if those work then perfect.
 #1280,960
@@ -226,6 +252,8 @@ while True:
 
     tHit = tank.getHitbox()
     for t in CurrentMap.tiles:
+        if type(t) == Water:
+            t.anim()
         if tHit.colliderect(t.hitbox):
             if abs(tHit.y+8 - t.hitbox.y)<32:
                 tank.pos[0] = t.hitbox.right+24

@@ -8,11 +8,16 @@ BACK = input("Background Tile > ")
 backtile = pygame.image.load("images/tiles/"+BACK+".png")
 sandstone = pygame.image.load("images/tiles/sandstone.png")
 grasscliff = pygame.image.load("images/tiles/grasscliff.png")
+water = pygame.image.load("images/tiles/water_00.png")
+water_0 = pygame.image.load("images/tiles/water_00.png")
+water_1 = pygame.image.load("images/tiles/water_01.png")
 sand = pygame.image.load("images/tiles/sand.png")
 grass = pygame.image.load("images/tiles/grass.png")
 
 black = [0,0,0,255]
 green = [0,255,0,255]
+
+edges = ["ctl","ctc","ctr","ccl","","ccr","cbl","cbc","cbr"]
 
 class Tile:
     def __init__(self,pos,img,imgstr,solid):
@@ -31,6 +36,25 @@ class Map:
         self.size = size
         self.spawns = spawns
 
+class Water(Tile):
+    def __init__(self,pos,solid):
+        self.pos = pos
+        self.img = water
+        self.imgstr = "water_00"
+        self.imgs = [water_0,water_1]
+        self.frame = 0
+        self.ticks = 0
+        self.solid = solid
+        self.hitbox = pygame.Rect(self.pos[0],self.pos[1],32,32)
+    def anim(self):
+        self.ticks += 1
+        if self.ticks > 5:
+            self.ticks = 0
+            self.frame+=1
+            if self.frame > len(self.imgs)-1:
+                self.frame = 0
+            self.img = self.imgs[self.frame]
+
 print("Launching Editor...")
 
 size = width,height = (1360,960)
@@ -42,6 +66,7 @@ NewMap = Map(NAME,[],backtile,(1280,960),[])
 buttons = []
 buttons.append(Tile([41*32,32],sandstone,"sandstone",0))
 buttons.append(Tile([41*32,32*3],grasscliff,"grasscliff",0))
+buttons.append(Water([41*32,32*5],0))
 
 currentTile = sandstone
 while True:
@@ -60,7 +85,10 @@ while True:
                 file.write("# end options \n")
                 
                 for t in NewMap.tiles:
-                    file.write("tile "+str(int(t.pos[0]/32))+" "+str(int(t.pos[1]/32))+" "+t.imgstr + " 1 \n")
+                    if type(t) == Water:
+                        file.write("water "+str(int(t.pos[0]/32))+" "+str(int(t.pos[1]/32))+"\n")
+                    else:
+                        file.write("tile "+str(int(t.pos[0]/32))+" "+str(int(t.pos[1]/32))+" "+t.imgstr + " 1 \n")
                 file.close()
         if event.type == MOUSEBUTTONDOWN:
             mpos = x,y = pygame.mouse.get_pos()
@@ -71,15 +99,22 @@ while True:
                 if event.button == 1:
                     if currentTile == sandstone:
                         t = Tile([x-x%32,y-y%32],currentTile,"sandstone",1)
+                        NewMap.tiles.append(t)
                     elif currentTile == grasscliff:
                         t = Tile([x-x%32,y-y%32],currentTile,"grasscliff",1)
-
-                    NewMap.tiles.append(t)
+                        NewMap.tiles.append(t)
+                    elif currentTile == water:
+                        t = Water([x-x%32,y-y%32],0)
+                        NewMap.tiles.append(t)
                 else:
                     for t in NewMap.tiles:
                         if t.getHitbox().collidepoint(mpos):
                             NewMap.tiles.remove(t)
 
+    for t in NewMap.tiles:
+        if type(t) == Water:
+            t.anim()
+    
     screen.fill(black)
     for y in range(30):
         for x in range(40):
