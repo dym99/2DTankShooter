@@ -213,6 +213,9 @@ while True:
         moving = True
     tank.updateGunAngle()
 
+    for t in CurrentMap.tiles:
+        pass
+    
     for bullet in bullets:
         bullet.move()
 
