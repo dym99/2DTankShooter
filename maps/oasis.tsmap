@@ -3,11 +3,483 @@ map_name oasis
 back_tile sand
 map_size 1280 960 
 # end options 
-water 35 3
-water 36 3
-water 36 2
-water 35 2
-tile 34 1 sandstone 1 
-tile 37 1 sandstone 1 
-tile 37 4 sandstone 1 
+tile 39 0 sandstone 1 
+tile 39 1 sandstone 1 
+tile 39 2 sandstone 1 
+tile 39 3 sandstone 1 
+tile 39 4 sandstone 1 
+tile 39 5 sandstone 1 
+tile 39 6 sandstone 1 
+tile 39 7 sandstone 1 
+tile 39 8 sandstone 1 
+tile 39 9 sandstone 1 
+tile 39 10 sandstone 1 
+tile 39 11 sandstone 1 
+tile 39 12 sandstone 1 
+tile 39 13 sandstone 1 
+tile 39 14 sandstone 1 
+tile 39 15 sandstone 1 
+tile 39 16 sandstone 1 
+tile 39 17 sandstone 1 
+tile 39 18 sandstone 1 
+tile 39 19 sandstone 1 
+tile 39 20 sandstone 1 
+tile 39 21 sandstone 1 
+tile 39 22 sandstone 1 
+tile 39 23 sandstone 1 
+tile 39 24 sandstone 1 
+tile 39 25 sandstone 1 
+tile 39 26 sandstone 1 
+tile 39 27 sandstone 1 
+tile 39 28 sandstone 1 
+tile 39 29 sandstone 1 
+tile 38 29 sandstone 1 
+tile 37 29 sandstone 1 
+tile 36 29 sandstone 1 
+tile 35 29 sandstone 1 
+tile 34 29 sandstone 1 
+tile 33 29 sandstone 1 
+tile 32 29 sandstone 1 
+tile 31 29 sandstone 1 
+tile 30 29 sandstone 1 
+tile 29 29 sandstone 1 
+tile 28 29 sandstone 1 
+tile 27 29 sandstone 1 
+tile 26 29 sandstone 1 
+tile 25 29 sandstone 1 
+tile 24 29 sandstone 1 
+tile 23 29 sandstone 1 
+tile 22 29 sandstone 1 
+tile 21 29 sandstone 1 
+tile 20 29 sandstone 1 
+tile 19 29 sandstone 1 
+tile 18 29 sandstone 1 
+tile 17 29 sandstone 1 
+tile 16 29 sandstone 1 
+tile 15 29 sandstone 1 
+tile 14 29 sandstone 1 
+tile 13 29 sandstone 1 
+tile 12 29 sandstone 1 
+tile 11 29 sandstone 1 
+tile 10 29 sandstone 1 
+tile 9 29 sandstone 1 
+tile 8 29 sandstone 1 
+tile 7 29 sandstone 1 
+tile 6 29 sandstone 1 
+tile 5 29 sandstone 1 
+tile 4 29 sandstone 1 
+tile 3 29 sandstone 1 
+tile 2 29 sandstone 1 
+tile 1 29 sandstone 1 
+tile 0 29 sandstone 1 
+tile 0 28 sandstone 1 
+tile 0 27 sandstone 1 
+tile 0 26 sandstone 1 
+tile 0 25 sandstone 1 
+tile 0 24 sandstone 1 
+tile 0 23 sandstone 1 
+tile 0 22 sandstone 1 
+tile 0 21 sandstone 1 
+tile 0 20 sandstone 1 
+tile 0 19 sandstone 1 
+tile 0 18 sandstone 1 
+tile 0 17 sandstone 1 
+tile 0 16 sandstone 1 
+tile 0 15 sandstone 1 
+tile 0 14 sandstone 1 
+tile 0 13 sandstone 1 
+tile 0 12 sandstone 1 
+tile 0 11 sandstone 1 
+tile 0 10 sandstone 1 
+tile 0 9 sandstone 1 
+tile 0 8 sandstone 1 
+tile 0 7 sandstone 1 
+tile 0 6 sandstone 1 
+tile 0 5 sandstone 1 
+tile 0 4 sandstone 1 
+tile 0 3 sandstone 1 
+tile 0 2 sandstone 1 
+tile 0 1 sandstone 1 
+tile 0 0 sandstone 1 
+tile 1 0 sandstone 1 
+tile 2 0 sandstone 1 
+tile 3 0 sandstone 1 
+tile 4 0 sandstone 1 
+tile 5 0 sandstone 1 
+tile 6 0 sandstone 1 
+tile 7 0 sandstone 1 
+tile 8 0 sandstone 1 
+tile 9 0 sandstone 1 
+tile 10 0 sandstone 1 
+tile 11 0 sandstone 1 
+tile 12 0 sandstone 1 
+tile 13 0 sandstone 1 
+tile 14 0 sandstone 1 
+tile 15 0 sandstone 1 
+tile 16 0 sandstone 1 
+tile 17 0 sandstone 1 
+tile 18 0 sandstone 1 
+tile 19 0 sandstone 1 
+tile 20 0 sandstone 1 
+tile 21 0 sandstone 1 
+tile 22 0 sandstone 1 
+tile 23 0 sandstone 1 
+tile 24 0 sandstone 1 
+tile 25 0 sandstone 1 
+tile 26 0 sandstone 1 
+tile 28 0 sandstone 1 
+tile 27 0 sandstone 1 
+tile 29 0 sandstone 1 
+tile 30 0 sandstone 1 
+tile 31 0 sandstone 1 
+tile 32 0 sandstone 1 
+tile 33 0 sandstone 1 
+tile 34 0 sandstone 1 
+tile 35 0 sandstone 1 
+tile 36 0 sandstone 1 
+tile 37 0 sandstone 1 
+tile 38 0 sandstone 1 
+tile 6 14 sandstone 1 
+tile 5 14 sandstone 1 
+tile 4 14 sandstone 1 
+tile 3 14 sandstone 1 
+tile 2 14 sandstone 1 
+tile 1 14 sandstone 1 
+tile 4 9 sandstone 1 
+tile 5 9 sandstone 1 
+tile 6 9 sandstone 1 
+tile 4 8 sandstone 1 
+tile 4 7 sandstone 1 
+tile 4 6 sandstone 1 
+tile 4 5 sandstone 1 
+tile 4 4 sandstone 1 
+tile 5 4 sandstone 1 
+tile 6 4 sandstone 1 
+tile 6 5 sandstone 1 
+tile 6 6 sandstone 1 
+tile 6 7 sandstone 1 
+tile 6 8 sandstone 1 
+tile 5 8 sandstone 1 
+tile 5 7 sandstone 1 
+tile 5 6 sandstone 1 
+tile 5 5 sandstone 1 
+tile 4 19 sandstone 1 
+tile 4 20 sandstone 1 
+tile 4 21 sandstone 1 
+tile 4 22 sandstone 1 
+tile 4 23 sandstone 1 
+tile 5 23 sandstone 1 
+tile 6 23 sandstone 1 
+tile 6 22 sandstone 1 
+tile 6 21 sandstone 1 
+tile 6 20 sandstone 1 
+tile 6 19 sandstone 1 
+tile 5 19 sandstone 1 
+tile 5 20 sandstone 1 
+tile 5 21 sandstone 1 
+tile 5 22 sandstone 1 
+tile 4 24 sandstone 1 
+tile 5 24 sandstone 1 
+tile 6 24 sandstone 1 
+tile 6 15 sandstone 1 
+tile 5 15 sandstone 1 
+tile 4 15 sandstone 1 
+tile 3 15 sandstone 1 
+tile 2 15 sandstone 1 
+tile 1 15 sandstone 1 
+tile 4 10 sandstone 1 
+tile 5 10 sandstone 1 
+tile 6 10 sandstone 1 
+tile 4 25 sandstone 1 
+tile 5 25 sandstone 1 
+tile 6 25 sandstone 1 
+tile 10 14 sandstone 1 
+tile 10 15 sandstone 1 
+tile 10 16 sandstone 1 
+tile 10 17 sandstone 1 
+tile 10 18 sandstone 1 
+tile 10 19 sandstone 1 
+tile 10 20 sandstone 1 
+tile 10 25 sandstone 1 
+tile 10 24 sandstone 1 
+tile 11 25 sandstone 1 
+tile 12 25 sandstone 1 
+tile 11 24 sandstone 1 
+tile 12 24 sandstone 1 
+tile 13 24 sandstone 1 
+tile 13 25 sandstone 1 
+tile 11 20 sandstone 1 
+tile 11 19 sandstone 1 
+tile 11 18 sandstone 1 
+tile 11 17 sandstone 1 
+tile 11 16 sandstone 1 
+tile 11 15 sandstone 1 
+tile 11 14 sandstone 1 
+tile 11 13 sandstone 1 
+tile 11 12 sandstone 1 
+tile 11 11 sandstone 1 
+tile 11 10 sandstone 1 
+tile 11 9 sandstone 1 
+tile 10 9 sandstone 1 
+tile 10 10 sandstone 1 
+tile 10 11 sandstone 1 
+tile 10 12 sandstone 1 
+tile 10 13 sandstone 1 
+tile 10 5 sandstone 1 
+tile 10 4 sandstone 1 
+tile 11 4 sandstone 1 
+tile 11 5 sandstone 1 
+tile 12 5 sandstone 1 
+tile 12 4 sandstone 1 
+tile 13 4 sandstone 1 
+tile 13 5 sandstone 1 
+tile 15 5 sandstone 1 
+tile 15 6 sandstone 1 
+tile 15 7 sandstone 1 
+tile 15 8 sandstone 1 
+tile 15 9 sandstone 1 
+tile 15 10 sandstone 1 
+tile 16 10 sandstone 1 
+tile 16 9 sandstone 1 
+tile 16 8 sandstone 1 
+tile 16 7 sandstone 1 
+tile 16 6 sandstone 1 
+tile 16 5 sandstone 1 
+tile 14 5 sandstone 1 
+tile 14 4 sandstone 1 
+tile 15 4 sandstone 1 
+tile 16 4 sandstone 1 
+tile 14 25 sandstone 1 
+tile 14 24 sandstone 1 
+tile 15 24 sandstone 1 
+tile 15 25 sandstone 1 
+tile 16 25 sandstone 1 
+tile 16 24 sandstone 1 
+tile 16 23 sandstone 1 
+tile 15 23 sandstone 1 
+tile 15 22 sandstone 1 
+tile 16 22 sandstone 1 
+tile 16 21 sandstone 1 
+tile 15 21 sandstone 1 
+tile 15 20 sandstone 1 
+tile 16 20 sandstone 1 
+tile 16 19 sandstone 1 
+tile 15 19 sandstone 1 
+water 15 11
+water 15 12
+water 15 13
+water 15 14
+water 15 15
+water 15 16
+water 15 17
+water 15 18
+water 16 18
+water 16 17
+water 16 16
+water 16 15
+water 16 14
+water 16 13
+water 16 12
+water 16 11
+water 17 11
+water 18 11
+water 19 11
+water 20 11
+water 21 11
+water 22 11
+water 17 18
+water 18 18
+water 19 18
+water 20 18
+water 21 18
+water 22 18
+water 22 17
+water 22 16
+water 22 15
+water 22 14
+water 22 13
+water 22 12
+water 21 12
+water 21 13
+water 21 14
+water 21 15
+water 21 16
+water 21 17
+water 20 17
+water 20 16
+water 20 15
+water 20 14
+water 20 13
+water 20 12
+water 19 12
+water 18 12
+water 17 12
+water 17 13
+water 18 13
+water 19 13
+water 19 14
+water 18 14
+water 17 14
+water 17 15
+water 17 17
+water 18 17
+water 19 17
+water 19 16
+water 18 16
+water 17 16
+water 18 15
+water 19 15
+tile 35 4 sandstone 1 
 tile 34 4 sandstone 1 
+tile 33 4 sandstone 1 
+tile 33 5 sandstone 1 
+tile 34 5 sandstone 1 
+tile 35 5 sandstone 1 
+tile 35 6 sandstone 1 
+tile 34 6 sandstone 1 
+tile 33 6 sandstone 1 
+tile 33 7 sandstone 1 
+tile 34 7 sandstone 1 
+tile 35 7 sandstone 1 
+tile 35 8 sandstone 1 
+tile 34 8 sandstone 1 
+tile 33 8 sandstone 1 
+tile 33 9 sandstone 1 
+tile 34 9 sandstone 1 
+tile 35 9 sandstone 1 
+tile 34 10 sandstone 1 
+tile 33 10 sandstone 1 
+tile 35 10 sandstone 1 
+tile 38 14 sandstone 1 
+tile 37 14 sandstone 1 
+tile 36 14 sandstone 1 
+tile 35 14 sandstone 1 
+tile 34 14 sandstone 1 
+tile 33 14 sandstone 1 
+tile 33 15 sandstone 1 
+tile 34 15 sandstone 1 
+tile 35 15 sandstone 1 
+tile 36 15 sandstone 1 
+tile 37 15 sandstone 1 
+tile 38 15 sandstone 1 
+tile 33 19 sandstone 1 
+tile 34 19 sandstone 1 
+tile 35 19 sandstone 1 
+tile 35 20 sandstone 1 
+tile 34 20 sandstone 1 
+tile 33 20 sandstone 1 
+tile 33 21 sandstone 1 
+tile 34 21 sandstone 1 
+tile 35 21 sandstone 1 
+tile 35 22 sandstone 1 
+tile 34 22 sandstone 1 
+tile 33 22 sandstone 1 
+tile 33 23 sandstone 1 
+tile 34 23 sandstone 1 
+tile 35 23 sandstone 1 
+tile 35 24 sandstone 1 
+tile 34 24 sandstone 1 
+tile 33 24 sandstone 1 
+tile 33 25 sandstone 1 
+tile 34 25 sandstone 1 
+tile 35 25 sandstone 1 
+tile 29 24 sandstone 1 
+tile 29 25 sandstone 1 
+tile 28 25 sandstone 1 
+tile 28 24 sandstone 1 
+tile 27 24 sandstone 1 
+tile 27 25 sandstone 1 
+tile 26 25 sandstone 1 
+tile 26 24 sandstone 1 
+tile 25 24 sandstone 1 
+tile 25 25 sandstone 1 
+tile 24 24 sandstone 1 
+tile 24 25 sandstone 1 
+tile 23 25 sandstone 1 
+tile 23 24 sandstone 1 
+tile 23 23 sandstone 1 
+tile 23 22 sandstone 1 
+tile 23 21 sandstone 1 
+tile 23 20 sandstone 1 
+tile 23 19 sandstone 1 
+tile 24 19 sandstone 1 
+tile 24 20 sandstone 1 
+tile 24 21 sandstone 1 
+tile 24 22 sandstone 1 
+tile 24 23 sandstone 1 
+tile 23 10 sandstone 1 
+tile 24 10 sandstone 1 
+tile 24 9 sandstone 1 
+tile 23 9 sandstone 1 
+tile 23 8 sandstone 1 
+tile 24 8 sandstone 1 
+tile 24 7 sandstone 1 
+tile 23 7 sandstone 1 
+tile 23 6 sandstone 1 
+tile 24 6 sandstone 1 
+tile 24 5 sandstone 1 
+tile 23 5 sandstone 1 
+tile 23 4 sandstone 1 
+tile 24 4 sandstone 1 
+tile 25 4 sandstone 1 
+tile 25 5 sandstone 1 
+tile 26 5 sandstone 1 
+tile 26 4 sandstone 1 
+tile 27 4 sandstone 1 
+tile 27 5 sandstone 1 
+tile 28 5 sandstone 1 
+tile 28 4 sandstone 1 
+tile 29 4 sandstone 1 
+tile 29 5 sandstone 1 
+tile 28 20 sandstone 1 
+tile 29 20 sandstone 1 
+tile 29 19 sandstone 1 
+tile 28 19 sandstone 1 
+tile 29 10 sandstone 1 
+tile 29 9 sandstone 1 
+tile 28 10 sandstone 1 
+tile 28 9 sandstone 1 
+tile 28 11 sandstone 1 
+tile 29 11 sandstone 1 
+tile 29 12 sandstone 1 
+tile 28 12 sandstone 1 
+tile 28 13 sandstone 1 
+tile 29 13 sandstone 1 
+tile 29 14 sandstone 1 
+tile 28 14 sandstone 1 
+tile 28 15 sandstone 1 
+tile 29 15 sandstone 1 
+tile 29 16 sandstone 1 
+tile 28 16 sandstone 1 
+tile 28 17 sandstone 1 
+tile 29 17 sandstone 1 
+tile 29 18 sandstone 1 
+tile 28 18 sandstone 1 
+water 23 11
+water 24 11
+water 24 12
+water 23 12
+water 23 13
+water 24 13
+water 24 14
+water 23 14
+water 23 15
+water 24 15
+water 24 16
+water 23 16
+water 23 17
+water 24 17
+water 24 18
+water 23 18
+tile 22 7 sandstone 1 
+tile 17 4 sandstone 1 
+tile 18 4 sandstone 1 
+tile 19 4 sandstone 1 
+tile 22 25 sandstone 1 
+tile 21 25 sandstone 1 
+tile 20 25 sandstone 1 
+tile 21 7 sandstone 1 
+tile 20 7 sandstone 1 
+tile 17 22 sandstone 1 
+tile 18 22 sandstone 1 
+tile 19 22 sandstone 1 

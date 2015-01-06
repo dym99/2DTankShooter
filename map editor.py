@@ -1,3 +1,11 @@
+ ###########################
+#                           #
+#   2D Tank Shooter Game    #
+#       MAP EDITOR          #
+#                           #
+ ###########################
+
+
 import pygame,sys,math
 from pygame import *
 
@@ -28,6 +36,7 @@ class Tile:
     def getHitbox(self):
         rect = pygame.Rect(self.pos[0],self.pos[1],32,32)
         return rect
+
 
 class Map:
     def __init__(self,name,tiles,backtile,size,spawns):

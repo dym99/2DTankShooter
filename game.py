@@ -15,6 +15,8 @@ tank_base_img = pygame.image.load("images/tank_base.png")
 tank_gun_img = pygame.image.load("images/tank_gun.png")
 tank_rubble_img = pygame.image.load("images/tank_rubble.png")
 crosshair = pygame.image.load("images/crosshair.png")
+mine_0 = pygame.image.load("images/mine_00.png")
+mine_1 = pygame.image.load("images/mine_01.png")
 explosion = []
 epl0 = pygame.image.load("images/expl_00.png")
 epl1 = pygame.image.load("images/expl_01.png")
@@ -35,6 +37,8 @@ explosion.append(epl4)
 explosion.append(epl4)
 explosion.append(epl4)
 explosions = []
+
+mines = []
 
 edges = ["ctl","ctc","ctr","ccl","","ccr","cbl","cbc","cbr"]
 
@@ -78,6 +82,27 @@ class Tank:
             explosions.append(Explosion([self.pos[0]+16,self.pos[1]-16]))
             explosions.append(Explosion([self.pos[0]+16,self.pos[1]+16]))
             
+class Mine:
+    def __init__(self,pos):
+        self.pos = pos
+        self.imgs = [mine_0,mine_1]
+        self.img = imgs[0]
+        self.ticks = 0
+        self.frame = 0
+    def anim(self):
+        self.ticks += 1
+        if self.ticks > 5:
+            self.ticks = 0
+            self.frame += 1
+            if self.frame > len(self.imgs)-1:
+                self.frame = 0
+            self.img = self.imgs[self.frame]
+    def getHitbox(self):
+        return pygame.Rect(self.pos[0]-8,self.pos[1]-8,32,32)
+    def remove(self):
+        e = Explosion(self.pos)
+        explosions.append(e)
+        mines.remove(self)
 
 class Explosion:
     def __init__(self,pos):
@@ -102,6 +127,7 @@ class Water(Tile):
         self.pos = pos
         self.img = water_0
         self.imgs = [water_0,water_1]
+        self.overlay = pygame.image.load("images/tiles/water_00.png")
         self.frame = 0
         self.ticks = 0
         self.solid = solid
@@ -139,6 +165,7 @@ def loadMap(mapfile):
                 map_name = w[1]
             elif w[0] == "back_tile":
                 back_tile = pygame.image.load("images/tiles/" + w[1] + ".png")
+                back_tile_str = w[1]
             elif w[0] == "map_size":
                 map_size = (int(w[1])*32,int(w[2])*32)
             elif w[0] == "tile":
@@ -150,6 +177,16 @@ def loadMap(mapfile):
             elif w[0] == "tank":
                 spawns.append([int(w[1])*32, int(w[2])*32])
     file.close()
+
+    for t in tiles:
+        if type(t) == Water:
+            for tt in tiles:
+                if type(tt) == Water:
+                    if tt.pos[0] == t.pos[0]:
+                        if tt.pos[1] != t.pos[1]-32:
+                            t.overlay == pygame.image.load("images/tiles/"+str(back_tile_str)+"_ctc.png")
+                    
+    
     newmap = Map(map_name,tiles,back_tile,map_size,spawns)
     return newmap
 
@@ -185,10 +222,9 @@ b = False
 f = False
 
 
-CurrentMap = loadMap("greenhill")
+CurrentMap = loadMap("oasis")
 size = width, height = (1280,960)
-#My dimensions 1366 and 768 ---> Griffin try 1280 and 960 too if those work then perfect.
-#1280,960
+#My dimensions 1366 and 768
 screen = pygame.display.set_mode(size,FULLSCREEN)
 
 bullets = []
@@ -197,6 +233,8 @@ if len(CurrentMap.spawns)>0:
     tank = Tank(CurrentMap.spawns[0],"YOU", -90)
 else:
     tank = Tank([64,64],"YOU", -90)
+
+reload = 0
 
 while True:
     for event in pygame.event.get():
@@ -217,6 +255,8 @@ while True:
                 bullet = Bullet(tankpos,tank.aimdir + 180, random.randint(-5,5))
                 bullets.append(bullet)
                 tank.b = False
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                pass
         else:
             c = False
             cc = False
@@ -251,6 +291,10 @@ while True:
     for explode in explosions:
         explode.anim()
 
+    for mine in mines:
+        if mine.getHitbox().colliderect(tank.getHitbox()):
+            tank.health -= 20
+        mine.anim()
     ###############################
 
     tHit = tank.getHitbox()
@@ -267,10 +311,11 @@ while True:
                 tank.pos[1] = t.hitbox.top-24
                 if tHit.y > t.hitbox.y:
                     tank.pos[1] = t.hitbox.bottom+24
-        for bullet in bullets:
-            if t.hitbox.collidepoint((bullet.pos[0],bullet.pos[1])):
-                bullet.remove()
-                
+        if type(t) != Water:
+            for bullet in bullets:
+                if t.hitbox.collidepoint((bullet.pos[0],bullet.pos[1])):
+                    bullet.remove()
+                    
 
     
     screen.fill(black)
@@ -292,6 +337,10 @@ while True:
         screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
     for t in CurrentMap.tiles:
         screen.blit(t.img,pygame.Rect((t.pos[0],t.pos[1],32,32)))
+        if type(t) == Water:
+            pass
+            #if t.overlay != pygame.image.load("images/tiles/water_00.png"):
+                #screen.blit(overlay,pygame.Rect((t.pos[0],t.pos[1],32,32)))
     for explode in explosions:
         screen.blit(explode.getImage(), pygame.Rect(explode.pos[0]-16,explode.pos[1]-16,32,32))
     mpos = x,y = pygame.mouse.get_pos()
