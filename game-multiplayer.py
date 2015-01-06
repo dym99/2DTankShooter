@@ -86,7 +86,7 @@ class Mine:
     def __init__(self,pos):
         self.pos = pos
         self.imgs = [mine_0,mine_1]
-        self.img = imgs[0]
+        self.img = self.imgs[0]
         self.ticks = 0
         self.frame = 0
     def anim(self):
@@ -98,7 +98,7 @@ class Mine:
                 self.frame = 0
             self.img = self.imgs[self.frame]
     def getHitbox(self):
-        return pygame.Rect(self.pos[0]-8,self.pos[1]-8,32,32)
+        return pygame.Rect(self.pos[0]-8,self.pos[1]-8,16,16)
     def remove(self):
         e = Explosion(self.pos)
         explosions.append(e)
@@ -222,7 +222,7 @@ b = False
 f = False
 
 
-CurrentMap = loadMap("oasis")
+CurrentMap = loadMap("bob")
 size = width, height = (1280,960)
 #My dimensions 1366 and 768
 screen = pygame.display.set_mode(size,FULLSCREEN)
@@ -251,12 +251,14 @@ while True:
             f = keys[K_w]
             b = keys[K_s]
             if event.type == MOUSEBUTTONDOWN and event.button == 1:
-                tankpos = [tank.pos[0],tank.pos[1]]
-                bullet = Bullet(tankpos,tank.aimdir + 180, random.randint(-5,5))
-                bullets.append(bullet)
-                tank.b = False
-            if event.type == MOUSEBUTTONDOWN and event.button == 1:
-                pass
+                if reload == 0:
+                    reload = 15
+                    tankpos = [tank.pos[0],tank.pos[1]]
+                    bullet = Bullet(tankpos,tank.aimdir + 180, random.randint(-5,5))
+                    bullets.append(bullet)
+                    tank.b = False
+            if event.type == MOUSEBUTTONDOWN and event.button == 2:
+                mines.append(Mine([int(tank.pos[0] + 48*cos((-tank.movdir+90)*pi/180)),int(tank.pos[1] + 48*sin((-tank.movdir+90)*pi/180))]))
         else:
             c = False
             cc = False
@@ -268,6 +270,8 @@ while True:
             tank.health = 0
             tank.die()
     movspeed = 0
+    if reload > 0:
+        reload -= 1
     if f:
         movspeed -= 3
     if b:
@@ -292,9 +296,10 @@ while True:
         explode.anim()
 
     for mine in mines:
+        mine.anim()
         if mine.getHitbox().colliderect(tank.getHitbox()):
             tank.health -= 20
-        mine.anim()
+            mine.remove()
     ###############################
 
     tHit = tank.getHitbox()
@@ -315,8 +320,6 @@ while True:
             for bullet in bullets:
                 if t.hitbox.collidepoint((bullet.pos[0],bullet.pos[1])):
                     bullet.remove()
-                    
-
     
     screen.fill(black)
 
@@ -325,8 +328,7 @@ while True:
     for y in range(30):
         for x in range(40):
             screen.blit(CurrentMap.backtile,(x*32,y*32))
-    for bullet in bullets:
-        pygame.draw.circle(screen, white, (bullet.pos[0],bullet.pos[1]), 3)
+    
     if tank.alive:
         transimg = pygame.transform.rotate(tank.baseimg,tank.movdir)
         screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
@@ -337,12 +339,13 @@ while True:
         screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
     for t in CurrentMap.tiles:
         screen.blit(t.img,pygame.Rect((t.pos[0],t.pos[1],32,32)))
-        if type(t) == Water:
-            pass
-            #if t.overlay != pygame.image.load("images/tiles/water_00.png"):
-                #screen.blit(overlay,pygame.Rect((t.pos[0],t.pos[1],32,32)))
+    for mine in mines:
+        screen.blit(mine.img,pygame.Rect((mine.pos[0],mine.pos[1],16,16)))
     for explode in explosions:
         screen.blit(explode.getImage(), pygame.Rect(explode.pos[0]-16,explode.pos[1]-16,32,32))
+    for bullet in bullets:
+        pygame.draw.circle(screen, white, (bullet.pos[0],bullet.pos[1]), 3)
+    
     mpos = x,y = pygame.mouse.get_pos()
     screen.blit(crosshair, pygame.Rect(x-16,y-16,32,32))
     ##### HUD code goes here #####
