@@ -185,7 +185,7 @@ b = False
 f = False
 
 
-CurrentMap = loadMap("greenhill")
+CurrentMap = loadMap("oasis")
 size = width, height = (1280,960)
 #My dimensions 1366 and 768 ---> Griffin try 1280 and 960 too if those work then perfect.
 #1280,960
@@ -265,8 +265,9 @@ while True:
                 if tHit.y > t.hitbox.y:
                     tank.pos[1] = t.hitbox.bottom+24
         for bullet in bullets:
-            if t.hitbox.collidepoint((bullet.pos[0],bullet.pos[1])):
-                bullet.remove()
+            if type(t) != Water:
+                if t.hitbox.collidepoint((bullet.pos[0],bullet.pos[1])):
+                    bullet.remove()
                 
 
     
@@ -277,8 +278,7 @@ while True:
     for y in range(30):
         for x in range(40):
             screen.blit(CurrentMap.backtile,(x*32,y*32))
-    for bullet in bullets:
-        pygame.draw.circle(screen, white, (bullet.pos[0],bullet.pos[1]), 3)
+    
     if tank.alive:
         transimg = pygame.transform.rotate(tank.baseimg,tank.movdir)
         screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
@@ -292,6 +292,8 @@ while True:
     for explode in explosions:
         screen.blit(explode.getImage(), pygame.Rect(explode.pos[0]-16,explode.pos[1]-16,32,32))
     mpos = x,y = pygame.mouse.get_pos()
+    for bullet in bullets:
+        pygame.draw.circle(screen, white, (bullet.pos[0],bullet.pos[1]), 3)
     screen.blit(crosshair, pygame.Rect(x-16,y-16,32,32))
     ##### HUD code goes here #####
     
