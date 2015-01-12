@@ -276,12 +276,12 @@ while True:
                 f = keys[K_w]
                 b = keys[K_s]
                 if event.type == MOUSEBUTTONDOWN and event.button == 1:
-                    #if reload == 0:
-                    reload = 15
-                    tankpos = [tank.pos[0],tank.pos[1]]
-                    bullet = Bullet(tankpos,tank.aimdir + 180, random.randint(-5,5))
-                    bullets.append(bullet)
-                    tank.b = False
+                    if reload == 0:
+                        reload = 15
+                        tankpos = [tank.pos[0],tank.pos[1]]
+                        bullet = Bullet(tankpos,tank.aimdir + 180, random.randint(-5,5))
+                        bullets.append(bullet)
+                        tank.b = False
                 if event.type == MOUSEBUTTONDOWN and event.button == 2:
                     mines.append(Mine([int(tank.pos[0] + 48*cos((-tank.movdir+90)*pi/180)),int(tank.pos[1] + 48*sin((-tank.movdir+90)*pi/180))]))
             else:
@@ -355,7 +355,7 @@ while True:
                 screen.blit(CurrentMap.backtile,(x*32,y*32))
         
         if tank.alive:
-            transimg = pygame.transform.rotate(tank.baseimg,tank.movdir)
+            transimg = pygame.transform.rotate(tank.baseimg,tank.movdir+180)
             screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
             transimg = pygame.transform.rotate(tank_gun_img,tank.aimdir)
             screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
