@@ -1,0 +1,30 @@
+# options 
+map_name adasdas
+back_tile sand
+map_size 1280 960 
+# end options 
+tile 20 5 sandstone 1 
+tile 21 5 sandstone 1 
+tile 22 5 sandstone 1 
+tile 23 5 sandstone 1 
+tile 23 6 sandstone 1 
+tile 23 7 sandstone 1 
+tile 23 8 sandstone 1 
+tile 23 9 sandstone 1 
+tile 22 9 sandstone 1 
+tile 21 9 sandstone 1 
+tile 20 9 sandstone 1 
+tile 19 9 sandstone 1 
+tile 19 8 sandstone 1 
+tile 19 7 sandstone 1 
+water 20 6
+water 21 6
+water 22 6
+water 22 7
+water 21 7
+water 20 7
+water 20 8
+water 21 8
+water 22 8
+tile 19 5 sandstone 1 
+tile 19 6 sandstone 1 

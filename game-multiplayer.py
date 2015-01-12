@@ -222,7 +222,7 @@ b = False
 f = False
 
 
-CurrentMap = loadMap("bob")
+CurrentMap = loadMap("oasis")
 size = width, height = (1280,960)
 #My dimensions 1366 and 768
 screen = pygame.display.set_mode(size,FULLSCREEN)
