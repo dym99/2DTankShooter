@@ -71,8 +71,8 @@ class Tank:
         return pygame.Rect(self.pos[0]-24,self.pos[1]-24,48,48)
     def move(self):
         if self.alive:
-            self.pos[0] = int(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180)) % width
-            self.pos[1] = int(self.pos[1] + self.speed*sin((-self.movdir+90)*pi/180)) % height
+            self.pos[0] = float(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180)) % width
+            self.pos[1] = float(self.pos[1] + self.speed*sin((-self.movdir+90)*pi/180)) % height
     def updateGunAngle(self):
         mpos = pygame.mouse.get_pos()
         self.aimdir = ((180-atan2(mpos[1]-self.pos[1],mpos[0]-self.pos[0])*180/pi))+90
@@ -199,8 +199,8 @@ class Bullet:
         self.speed = 10
         self.movdir = movdir + accuracy
     def move(self):
-        self.pos[0] = int(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180))
-        self.pos[1] = int(self.pos[1] + self.speed*sin((-self.movdir+90)*pi/180))
+        self.pos[0] = float(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180))
+        self.pos[1] = float(self.pos[1] + self.speed*sin((-self.movdir+90)*pi/180))
         if self.pos[0] > width:
             self.pos[0] = width
             self.remove()
@@ -232,7 +232,7 @@ screen = pygame.display.set_mode(size,FULLSCREEN)
 
 bullets = []
 
-tank = Tank([64,64],"YOU", -90)
+tank = Tank([float(64),float(64)],"YOU", -90)
 
 reload = 0
 
@@ -276,12 +276,12 @@ while True:
                 f = keys[K_w]
                 b = keys[K_s]
                 if event.type == MOUSEBUTTONDOWN and event.button == 1:
-                    if reload == 0:
-                        reload = 15
-                        tankpos = [tank.pos[0],tank.pos[1]]
-                        bullet = Bullet(tankpos,tank.aimdir + 180, random.randint(-5,5))
-                        bullets.append(bullet)
-                        tank.b = False
+                    #if reload == 0:
+                    reload = 15
+                    tankpos = [tank.pos[0],tank.pos[1]]
+                    bullet = Bullet(tankpos,tank.aimdir + 180, random.randint(-5,5))
+                    bullets.append(bullet)
+                    tank.b = False
                 if event.type == MOUSEBUTTONDOWN and event.button == 2:
                     mines.append(Mine([int(tank.pos[0] + 48*cos((-tank.movdir+90)*pi/180)),int(tank.pos[1] + 48*sin((-tank.movdir+90)*pi/180))]))
             else:
@@ -369,7 +369,7 @@ while True:
         for explode in explosions:
             screen.blit(explode.getImage(), pygame.Rect(explode.pos[0]-16,explode.pos[1]-16,32,32))
         for bullet in bullets:
-            pygame.draw.circle(screen, white, (bullet.pos[0],bullet.pos[1]), 3)
+            pygame.draw.circle(screen, white, (int(bullet.pos[0]),int(bullet.pos[1])), 3)
         
         mpos = x,y = pygame.mouse.get_pos()
         screen.blit(crosshair, pygame.Rect(x-16,y-16,32,32))
