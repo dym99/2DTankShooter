@@ -5,15 +5,18 @@
  ###########################
 
 
-import math,sys,pygame,socket,random
+import math,sys,pygame,socket,random,threading,time
 from pygame import *
 from math import radians, sin, cos, tan, pi, atan2
 pygame.init()
 pygame.key.set_repeat(20)
 
+sand = pygame.image.load("images/tiles/sand.png")
+grass = pygame.image.load("images/tiles/grass.png")
 tank_base_img = pygame.image.load("images/tank_base.png")
 tank_gun_img = pygame.image.load("images/tank_gun.png")
 tank_rubble_img = pygame.image.load("images/tank_rubble.png")
+title = pygame.image.load("images/title.png")
 crosshair = pygame.image.load("images/crosshair.png")
 mine_0 = pygame.image.load("images/mine_00.png")
 mine_1 = pygame.image.load("images/mine_01.png")
@@ -37,6 +40,12 @@ explosion.append(epl4)
 explosion.append(epl4)
 explosion.append(epl4)
 explosions = []
+fire0 = pygame.image.load("images/fire0.png")
+fire1 = pygame.image.load("images/fire1.png")
+fire = []
+fire.append(fire0)
+fire.append(fire1)
+fires = []
 
 mines = []
 
@@ -68,8 +77,8 @@ class Tank:
         return pygame.Rect(self.pos[0]-24,self.pos[1]-24,48,48)
     def move(self):
         if self.alive:
-            self.pos[0] = int(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180)) % width
-            self.pos[1] = int(self.pos[1] + self.speed*sin((-self.movdir+90)*pi/180)) % height
+            self.pos[0] = float(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180)) % width
+            self.pos[1] = float(self.pos[1] + self.speed*sin((-self.movdir+90)*pi/180)) % height
     def updateGunAngle(self):
         mpos = pygame.mouse.get_pos()
         self.aimdir = ((180-atan2(mpos[1]-self.pos[1],mpos[0]-self.pos[0])*180/pi))+90
@@ -81,6 +90,8 @@ class Tank:
             explosions.append(Explosion([self.pos[0]-16,self.pos[1]+16]))
             explosions.append(Explosion([self.pos[0]+16,self.pos[1]-16]))
             explosions.append(Explosion([self.pos[0]+16,self.pos[1]+16]))
+            fir = Fire(self.pos)
+            fires.append(fir)
             
 class Mine:
     def __init__(self,pos):
@@ -104,13 +115,28 @@ class Mine:
         explosions.append(e)
         mines.remove(self)
 
+class Fire:
+    def __init__(self,pos):
+        self.pos = pos
+        self.frame = 0
+        self.timeleft = 25
+    def anim(self):
+        self.frame += 1
+        self.timeleft -= 1
+        if self.timeleft <= 0:
+            fires.remove(self)
+        if self.frame > 1:
+            self.frame = 0
+    def getImage(self):
+        return fire[int(self.frame)]
+
 class Explosion:
     def __init__(self,pos):
         self.pos = pos
         self.frame = 0
     def anim(self):
         self.frame += 1
-        if self.frame >= 12:
+        if self.frame > len(explosion)-1:
             explosions.remove(self)
     def getImage(self):
         return explosion[int(self.frame)]
@@ -196,8 +222,8 @@ class Bullet:
         self.speed = 10
         self.movdir = movdir + accuracy
     def move(self):
-        self.pos[0] = int(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180))
-        self.pos[1] = int(self.pos[1] + self.speed*sin((-self.movdir+90)*pi/180))
+        self.pos[0] = float(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180))
+        self.pos[1] = float(self.pos[1] + self.speed*sin((-self.movdir+90)*pi/180))
         if self.pos[0] > width:
             self.pos[0] = width
             self.remove()
@@ -221,6 +247,9 @@ cc = False
 b = False
 f = False
 
+port = 23654
+bufferSize = 1024
+formatter = "{:<"+str(bufferSize)+"}"
 
 CurrentMap = loadMap("oasis")
 size = width, height = (1280,960)
@@ -228,133 +257,171 @@ size = width, height = (1280,960)
 screen = pygame.display.set_mode(size,FULLSCREEN)
 
 bullets = []
+tanks = []
 
-if len(CurrentMap.spawns)>0:
-    tank = Tank(CurrentMap.spawns[0],"YOU", -90)
-else:
-    tank = Tank([64,64],"YOU", -90)
+tank = Tank([float(64),float(64)],"YOU", -90)
+tanks.append(tank)
 
 reload = 0
 
+gamestate = 0      # 0 = main menu # 1 = lobby # 2 = game # 3 = endgame #
+
+mode = "server"
+
 while True:
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-        keys = pygame.key.get_pressed()
-        if keys[K_ESCAPE]:
-            pygame.quit()
-            sys.exit()
-        if tank.alive:
-            c = keys[K_d]
-            cc = keys[K_a]
-            f = keys[K_w]
-            b = keys[K_s]
-            if event.type == MOUSEBUTTONDOWN and event.button == 1:
-                if reload == 0:
-                    reload = 15
-                    tankpos = [tank.pos[0],tank.pos[1]]
-                    bullet = Bullet(tankpos,tank.aimdir + 180, random.randint(-5,5))
-                    bullets.append(bullet)
-                    tank.b = False
-            if event.type == MOUSEBUTTONDOWN and event.button == 2:
-                mines.append(Mine([int(tank.pos[0] + 48*cos((-tank.movdir+90)*pi/180)),int(tank.pos[1] + 48*sin((-tank.movdir+90)*pi/180))]))
+    while gamestate == 0:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                keys = pygame.key.get_pressed()
+                if keys[K_ESCAPE]:
+                    pygame.quit()
+                    sys.exit()
+                gamestate = 2
+
+        screen.fill(black)
+        for y in range(30):
+                for x in range(40):
+                    screen.blit(sand,(x*32,y*32))
+        screen.blit(title,(width/2-140,height/2-92))
+        pygame.display.flip()
+        pygame.time.wait(100)
+    while gamestate == 1:
+        pass # PUT MATCHMAKING CODE HERE
+    while gamestate == 2:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            keys = pygame.key.get_pressed()
+            if keys[K_ESCAPE]:
+                pygame.quit()
+                sys.exit()
+            if tank.alive:
+                c = keys[K_d]
+                cc = keys[K_a]
+                f = keys[K_w]
+                b = keys[K_s]
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    if reload == 0:
+                        reload = 15
+                        tankpos = [tank.pos[0],tank.pos[1]]
+                        bullet = Bullet(tankpos,tank.aimdir + 180, 0)#*random.randint(-5,5))
+                        bullets.append(bullet)
+                        tank.b = False
+                if event.type == MOUSEBUTTONDOWN and event.button == 2:
+                    mines.append(Mine([int(tank.pos[0] + 48*cos((-tank.movdir+90)*pi/180)),int(tank.pos[1] + 48*sin((-tank.movdir+90)*pi/180))]))
+            else:
+                c = False
+                cc = False
+                f = False
+                b = False
+            if tank.health < 1:
+                tank.health = 0
+                tank.die()
+        movspeed = 0
+        if reload > 0:
+            reload -= 1
+        if f:
+            movspeed -= 3
+        if b:
+            movspeed += 3
+        tank.speed = movspeed
+        tank.move()
+        if cc:
+            tank.movdir+=5
+        if c:
+            tank.movdir-=5
         else:
-            c = False
-            cc = False
-            f = False
-            b = False
-        if keys[K_p]:
-            tank.health -= 1
-        if tank.health < 1:
-            tank.health = 0
-            tank.die()
-    movspeed = 0
-    if reload > 0:
-        reload -= 1
-    if f:
-        movspeed -= 3
-    if b:
-        movspeed += 3
-    tank.speed = movspeed
-    tank.move()
-    if cc:
-        tank.movdir+=5
-    if c:
-        tank.movdir-=5
-    else:
-        moving = True
-    tank.updateGunAngle()
+            moving = True
+        tank.updateGunAngle()
 
-    for t in CurrentMap.tiles:
-        pass
-    
-    for bullet in bullets:
-        bullet.move()
+        for fi in fires:
+            fi.anim()
+        
+        for t in CurrentMap.tiles:
+            pass
+        
+        for bullet in bullets:
+            bullet.move()
 
-    for explode in explosions:
-        explode.anim()
+        for explode in explosions:
+            explode.anim()
 
-    for mine in mines:
-        mine.anim()
-        if mine.getHitbox().colliderect(tank.getHitbox()):
-            tank.health -= 20
-            mine.remove()
-    ###############################
+        for mine in mines:
+            mine.anim()
+            if mine.getHitbox().colliderect(tank.getHitbox()):
+                tank.health -= 20
+                mine.remove()
 
-    tHit = tank.getHitbox()
-    for t in CurrentMap.tiles:
-        if type(t) == Water:
-            t.anim()
-        if tHit.colliderect(t.hitbox):
-            if abs(tHit.y+8 - t.hitbox.y)<32:
-                tank.pos[0] = t.hitbox.right+24
-                if tHit.x < t.hitbox.x:
-                    tank.pos[0] = t.hitbox.left-24
-                
-            if abs(tHit.x+8 - t.hitbox.x)<32:
-                tank.pos[1] = t.hitbox.top-24
-                if tHit.y > t.hitbox.y:
-                    tank.pos[1] = t.hitbox.bottom+24
-        if type(t) != Water:
-            for bullet in bullets:
-                if t.hitbox.collidepoint((bullet.pos[0],bullet.pos[1])):
-                    bullet.remove()
-    
-    screen.fill(black)
+        if mode == "client":
+            pass
+        if mode == "server":
+            pass
+        ###############################
 
-    ###############################
-    
-    for y in range(30):
-        for x in range(40):
-            screen.blit(CurrentMap.backtile,(x*32,y*32))
-    
-    if tank.alive:
-        transimg = pygame.transform.rotate(tank.baseimg,tank.movdir)
-        screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
-        transimg = pygame.transform.rotate(tank_gun_img,tank.aimdir)
-        screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
-    else:
-        transimg = pygame.transform.rotate(tank_rubble_img,tank.movdir)
-        screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
-    for t in CurrentMap.tiles:
-        screen.blit(t.img,pygame.Rect((t.pos[0],t.pos[1],32,32)))
-    for mine in mines:
-        screen.blit(mine.img,pygame.Rect((mine.pos[0],mine.pos[1],16,16)))
-    for explode in explosions:
-        screen.blit(explode.getImage(), pygame.Rect(explode.pos[0]-16,explode.pos[1]-16,32,32))
-    for bullet in bullets:
-        pygame.draw.circle(screen, white, (bullet.pos[0],bullet.pos[1]), 3)
-    
-    mpos = x,y = pygame.mouse.get_pos()
-    screen.blit(crosshair, pygame.Rect(x-16,y-16,32,32))
-    ##### HUD code goes here #####
-    
-    pygame.draw.rect(screen, black, pygame.Rect(width-210,10,200,20))
-    pygame.draw.rect(screen, red, pygame.Rect(width-210,10,tank.health*2,20))
-    pygame.draw.rect(screen, grey, pygame.Rect(width-210,10,200,20),3)
+        tHit = tank.getHitbox()
+        for t in CurrentMap.tiles:
+            if type(t) == Water:
+                t.anim()
+            if tHit.colliderect(t.hitbox):
+                if abs(tHit.y+8 - t.hitbox.y)<32:
+                    tank.pos[0] = t.hitbox.right+24
+                    if tHit.x < t.hitbox.x:
+                        tank.pos[0] = t.hitbox.left-24
+                    
+                if abs(tHit.x+8 - t.hitbox.x)<32:
+                    tank.pos[1] = t.hitbox.top-24
+                    if tHit.y > t.hitbox.y:
+                        tank.pos[1] = t.hitbox.bottom+24
+            if type(t) != Water:
+                for bullet in bullets:
+                    if t.hitbox.collidepoint((bullet.pos[0],bullet.pos[1])):
+                        bullet.remove()
+        
+        screen.fill(black)
 
-    #########
+        ###############################
+        
+        for y in range(30):
+            for x in range(40):
+                screen.blit(CurrentMap.backtile,(x*32,y*32))
+        
+        for t in CurrentMap.tiles:
+            if type(t) == Water:
+                screen.blit(t.img,pygame.Rect((t.pos[0],t.pos[1],32,32)))
 
-    pygame.display.flip()
-    pygame.time.wait(5)
+        if tank.alive:
+            transimg = pygame.transform.rotate(tank.baseimg,tank.movdir+180)
+            screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
+            transimg = pygame.transform.rotate(tank_gun_img,tank.aimdir)
+            screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
+        else:
+            transimg = pygame.transform.rotate(tank_rubble_img,tank.movdir)
+            screen.blit(transimg, pygame.Rect(tank.pos[0]-transimg.get_rect().height/2,tank.pos[1]-transimg.get_rect().width/2,48,48))
+        for t in CurrentMap.tiles:
+            if type(t) != Water:
+                screen.blit(t.img,pygame.Rect((t.pos[0],t.pos[1],32,32)))
+        for mine in mines:
+            screen.blit(mine.img,pygame.Rect((mine.pos[0],mine.pos[1],16,16)))
+        for explode in explosions:
+            screen.blit(explode.getImage(), pygame.Rect(explode.pos[0]-16,explode.pos[1]-16,32,32))
+        for fi in fires:
+            screen.blit(fi.getImage(), pygame.Rect(fi.pos[0]-12,fi.pos[1]-12,24,24))
+        for bullet in bullets:
+            pygame.draw.circle(screen, white, (int(bullet.pos[0] + 0.5),int(bullet.pos[1] + 0.5)), 3)
+        
+        mpos = x,y = pygame.mouse.get_pos()
+        screen.blit(crosshair, pygame.Rect(x-16,y-16,32,32))
+        ##### HUD code goes here #####
+        
+        pygame.draw.rect(screen, black, pygame.Rect(width-210,10,200,20))
+        pygame.draw.rect(screen, red, pygame.Rect(width-210,10,tank.health*2,20))
+        pygame.draw.rect(screen, grey, pygame.Rect(width-210,10,200,20),3)
+
+        #########
+
+        pygame.display.flip()
+        pygame.time.wait(5)
