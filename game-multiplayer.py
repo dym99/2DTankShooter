@@ -11,6 +11,53 @@ from math import radians, sin, cos, tan, pi, atan2
 pygame.init()
 pygame.key.set_repeat(20)
 
+def client_listener():
+    while True:
+        try:
+            data=sock.recv(bufferSize).decode()
+            (d1,bts)=data.split('|B_|L-eT|')
+            (d2)=d1.split('\n')
+            tanks.clear()
+            for t in d1:
+                (p1,p2,moveangle,lookangle,alive,tag)=data.split(';')
+                tnk = Tank([p1,p2], tag, moveangle)
+                tnk.movdir = moveangle
+                tnk.aimdir = lookangle
+                tnk.alive = alive
+                tanks.append(tnk)
+            for b in bts:
+                S
+            if opponentGameOn==False:
+                gameOn=False
+        except ValueError:
+            pass
+        except (ConnectionResetError, ConnectionAbortedError, OSError):
+            gameOn=False
+        paddle1.left=int(d1)
+            paddle1.top=int(d2)
+            opponentGameOn = d3 in ['True','true','1']
+            if opponentGameOn==False:
+                gameOn=False
+        except ValueError:
+            pass
+        except (ConnectionResetError, ConnectionAbortedError, OSError):
+            gameOn=False
+    
+if mode=="client":
+    th=threading.Thread(target=client_listener)
+if mode=="server":
+    th=threading.Thread(target=server_listener)
+th.daemon=True
+th.start()
+
+def server_listener():
+    global paddle1,gameOn
+    while True:
+        try:
+            data=sock.recv(bufferSize).decode()
+            (d1,d2,d3,d4)=data.split('\n')
+
+
 sand = pygame.image.load("images/tiles/sand.png")
 grass = pygame.image.load("images/tiles/grass.png")
 tank_base_img = pygame.image.load("images/tank_base.png")
@@ -119,14 +166,18 @@ class Fire:
     def __init__(self,pos):
         self.pos = pos
         self.frame = 0
+        self.ticks = 0
         self.timeleft = 25
     def anim(self):
-        self.frame += 1
-        self.timeleft -= 1
-        if self.timeleft <= 0:
-            fires.remove(self)
-        if self.frame > 1:
-            self.frame = 0
+        self.ticks += 1
+        if self.ticks > 3:
+            self.ticks = 0
+            self.frame += 1
+            self.timeleft -= 1
+            if self.timeleft <= 0:
+                fires.remove(self)
+            if self.frame > 1:
+                self.frame = 0
     def getImage(self):
         return fire[int(self.frame)]
 
@@ -219,7 +270,7 @@ def loadMap(mapfile):
 class Bullet:
     def __init__(self, pos, movdir, accuracy):
         self.pos = pos
-        self.speed = 10
+        self.speed = 16
         self.movdir = movdir + accuracy
     def move(self):
         self.pos[0] = float(self.pos[0] + self.speed*cos((-self.movdir+90)*pi/180))
