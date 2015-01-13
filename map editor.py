@@ -13,6 +13,7 @@ from pygame import *
 pygame.init()
 NAME = input("Enter Map Name > ")
 BACK = input("Background Tile > ")
+tnksp = pygame.image.load("images/tank_base.png")
 backtile = pygame.image.load("images/tiles/"+BACK+".png")
 sandstone = pygame.image.load("images/tiles/sandstone.png")
 grasscliff = pygame.image.load("images/tiles/grasscliff.png")
@@ -45,6 +46,16 @@ class Map:
         self.size = size
         self.spawns = spawns
 
+class Spawn(Tile):
+    def __init__(self,pos):
+        self.pos = pos
+        self.img = tnksp
+        self.imgstr = "sp"
+        self.imgpos = (pos[0]-8,pos[1]-8)
+    def getHitbox(self):
+        rect = pygame.Rect(self.pos[0],self.pos[1],32,32)
+        return rect
+
 class Water(Tile):
     def __init__(self,pos,solid):
         self.pos = pos
@@ -76,9 +87,11 @@ buttons = []
 buttons.append(Tile([41*32,32],sandstone,"sandstone",0))
 buttons.append(Tile([41*32,32*3],grasscliff,"grasscliff",0))
 buttons.append(Water([41*32,32*5],0))
+buttons.append(Spawn([41*32,32*7]))
 
 currentTile = sandstone
 while True:
+    print(currentTile.imgstr)
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -104,6 +117,7 @@ while True:
             for b in buttons:
                 if b.getHitbox().collidepoint(mpos):
                     currentTile = b.img
+                    
             if mpos[0] < 1280:
                 if event.button == 1:
                     if currentTile == sandstone:
@@ -115,6 +129,8 @@ while True:
                     elif currentTile == water:
                         t = Water([x-x%32,y-y%32],0)
                         NewMap.tiles.append(t)
+                    elif currentTile == tnksp:
+                        t = Spawn([x-x%32,y-y%32])
                 else:
                     for t in NewMap.tiles:
                         if t.getHitbox().collidepoint(mpos):
@@ -130,10 +146,16 @@ while True:
             screen.blit(backtile,(x*32,y*32))
 
     for b in buttons:
-        screen.blit(b.img, (b.pos[0],b.pos[1]))
+        if type(b) != Spawn:
+            screen.blit(b.img, (b.pos[0],b.pos[1]))
+        else:
+            screen.blit(b.img, b.imgpos)
 
     for t in NewMap.tiles:
-        screen.blit(t.img,t.getHitbox())
+        if type(t) != Spawn:
+            screen.blit(t.img,t.getHitbox())
+        else:
+            screen.blit(t.img,t.imgpos)
 
     mpos = x,y = pygame.mouse.get_pos()
     pygame.draw.rect(screen,green,pygame.Rect(x-x%32, y-y%32, 32, 32),2)
