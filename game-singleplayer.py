@@ -119,14 +119,18 @@ class Fire:
     def __init__(self,pos):
         self.pos = pos
         self.frame = 0
-        self.timeleft = 25
+        self.timeleft = 50
+        self.ticks = 0
     def anim(self):
-        self.frame += 1
-        self.timeleft -= 1
-        if self.timeleft <= 0:
-            fires.remove(self)
-        if self.frame > 1:
-            self.frame = 0
+        self.ticks += 1
+        if self.ticks >= 3:
+            self.ticks = 0
+            self.frame += 1
+            self.timeleft -= 1
+            if self.timeleft <= 0:
+                fires.remove(self)
+            if self.frame > 1:
+                self.frame = 0
     def getImage(self):
         return fire[int(self.frame)]
 
@@ -260,7 +264,7 @@ bullets = []
 tanks = []
 
 tank = Tank([float(64),float(64)],"YOU", -90)
-tanks.append(tank)
+tanks.append(Tank([float(width-64),float(height-64)],"ENEMY", 90))
 
 reload = 0
 
